@@ -97,3 +97,77 @@ SET country = TRIM(TRAILING '.' FROM country)
 WHERE country LIKE 'United States%';
 SELECT *
 FROM world_layoffs.layoffs_stagging2;
+
+-- Changing the date column from str to DateTime
+SELECT `date`,
+STR_TO_DATE(`date`, "%m/%d/%Y")
+FROM world_layoffs.layoffs_stagging2;
+
+UPDATE world_layoffs.layoffs_stagging2
+SET `date` = STR_TO_DATE(`date`, "%m/%d/%Y");
+
+ALTER TABLE world_layoffs.layoffs_stagging2
+MODIFY COLUMN `date` DATE;
+
+SELECT *
+FROM world_layoffs.layoffs_stagging2;
+
+-- Romving or Populating the NULL / Blank values
+SELECT *
+FROM world_layoffs.layoffs_stagging2
+WHERE total_laid_off IS NULL
+AND percentage_laid_off IS NULL;
+
+UPDATE world_layoffs.layoffs_stagging2
+SET industry = null
+WHERE industry = "";
+
+SELECT *
+FROM world_layoffs.layoffs_stagging2
+WHERE industry IS NULL
+OR industry = "";
+
+SELECT *
+FROM world_layoffs.layoffs_stagging2
+WHERE company = "Airbnb";
+
+SELECT t1.industry, t2.industry
+FROM world_layoffs.layoffs_stagging2 t1
+JOIN world_layoffs.layoffs_stagging2 t2
+	ON t1.company = t2.company
+WHERE (t1.industry IS NULL OR t1.industry = "")
+AND t2.industry IS NOT NULL;
+
+UPDATE world_layoffs.layoffs_stagging2 t1
+JOIN world_layoffs.layoffs_stagging2 t2
+	ON t1.company = t2.company
+SET t1.industry = t2.industry
+WHERE t1.industry IS NULL
+AND t2.industry IS NOT NULL;
+
+SELECT *
+FROM world_layoffs.layoffs_stagging2
+WHERE industry IS NULL
+OR industry = "";
+
+SELECT *
+FROM world_layoffs.layoffs_stagging2
+WHERE company LIKE "Bally%";
+
+SELECT *
+FROM world_layoffs.layoffs_stagging2
+WHERE total_laid_off IS NULL
+AND percentage_laid_off IS NULL;
+
+-- Removing the Rows, as they do not have any value
+DELETE
+FROM world_layoffs.layoffs_stagging2
+WHERE total_laid_off IS NULL
+AND percentage_laid_off IS NULL;
+
+-- Removing the unnecessary Column
+ALTER TABLE world_layoffs.layoffs_stagging2
+DROP COLUMN row_num;
+
+SELECT *
+FROM world_layoffs.layoffs_stagging2;
